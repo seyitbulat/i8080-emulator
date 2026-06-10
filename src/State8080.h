@@ -35,6 +35,7 @@ void Init8080(State8080* state);
 
 uint16_t EmulateCycle(State8080* state);
 
+uint8_t GetRegisterPointer(State8080 *state, uint8_t reg_code);
 // opcodes
 
 uint8_t Opcode_NOP(State8080* state);

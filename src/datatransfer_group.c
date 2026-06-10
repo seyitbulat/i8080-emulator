@@ -1,5 +1,12 @@
 #include "State8080.h"
 
+
+
+
+/*
+    MVU , data (Move Immediate) Instuctions
+*/
+
 // 00 DD |D 110
 
 // A 111 -> 0x3E
@@ -84,4 +91,33 @@ uint8_t Opcode_MVI_L(State8080 *state){
 
     state->pc += 1;
     return 7;
+}
+
+
+
+/*
+    MVI M, data (Move to memory immediate)
+*/
+
+// 0x36
+uint8_t Opcode_MVI_M(State8080 *state){
+    uint8_t data = (uint8_t) state->memory[state->pc];
+
+    uint16_t address = state->reg_hl.lh;
+
+    state->memory[address] = data;
+
+    state->pc += 1;
+    return 10;
+}
+
+/*
+    MOV r1, r2 (Move register)
+*/
+uint8_t Opcode_MOV_R1_R2(State8080 *state){
+    
+    uint8_t reg_1 = state->memory[state->pc] & 0x07;
+    uint8_t reg_2 = state->memory[state->pc] & 0x38;
+
+    // not implemented
 }
