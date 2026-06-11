@@ -21,10 +21,42 @@ uint8_t* GetRegisterPointer(State8080* state, uint8_t reg_code) {
       return &state->reg_hl.h;
     case 5:  // L Register
       return &state->reg_hl.l;
+    case 6:  // HL register memory
+      return &state->memory[state->reg_hl.hl];
     case 7:  // A Register
       return &state->reg_a;
   }
 }
+
+uint16_t* GetRegisterPair(State8080* state, uint8_t rp) {
+  switch (rp) {
+    case 0:
+      return &state->reg_bc.hl;
+    case 1:
+      return &state->reg_de.hl;
+    case 2:
+      return &state->reg_hl.hl;
+    case 3:
+      return &state->sp;
+  }
+}
+
+void UpdateZeroAndSignFlags(State8080* state, uint8_t result) {
+  if (result == 0) {
+    state->reg_flag |= 0x40;  // set zero bit to 1
+  } else {
+    state->reg_flag &= 0xBF;  // set zero bit to 0
+  }
+
+  if (result & 0x80) {
+    state->reg_flag |= 0x80;  // set sign bit to 1
+
+  } else {
+    state->reg_flag &= 0x7F;  // set sign bit to 0
+  }
+}
+
+
 
 uint16_t EmulateCycle(State8080* state) {
   uint8_t opcode = state->memory[state->pc];

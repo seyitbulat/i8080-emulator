@@ -9,7 +9,7 @@ typedef union {
     uint8_t l;
     uint8_t h;
   };
-  uint16_t lh;
+  uint16_t hl;
 } RegisterCouple;
 
 typedef uint8_t (*OpcodeHandler)(State8080* state);
@@ -35,8 +35,11 @@ void Init8080(State8080* state);
 
 uint16_t EmulateCycle(State8080* state);
 
-uint8_t GetRegisterPointer(State8080 *state, uint8_t reg_code);
-// opcodes
+uint8_t* GetRegisterPointer(State8080* state, uint8_t reg_code);
+uint16_t* GetRegisterPair(State8080* state, uint8_t rp);
+void UpdateZeroAndSignFlags(State8080* state, uint8_t result);
+void GetRegister(State8080* state, uint8_t index);
 
+// opcodes
 uint8_t Opcode_NOP(State8080* state);
 uint8_t Opcode_NotImplemented(State8080* state);
