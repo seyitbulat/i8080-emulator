@@ -4,6 +4,8 @@
 
 #define MEMORY_SIZE 65536
 
+typedef struct State8080 State8080;
+
 typedef union {
   struct {
     uint8_t l;
@@ -14,7 +16,7 @@ typedef union {
 
 typedef uint8_t (*OpcodeHandler)(State8080* state);
 
-typedef struct {
+struct State8080 {
   uint8_t reg_a;
 
   RegisterCouple reg_bc;
@@ -29,7 +31,7 @@ typedef struct {
   uint8_t memory[MEMORY_SIZE];
 
   OpcodeHandler instruction_set[256];
-} State8080;
+};
 
 void Init8080(State8080* state);
 
@@ -43,3 +45,19 @@ void GetRegister(State8080* state, uint8_t index);
 // opcodes
 uint8_t Opcode_NOP(State8080* state);
 uint8_t Opcode_NotImplemented(State8080* state);
+
+uint8_t Opcode_MVI_R(State8080* state);
+uint8_t Opcode_MOV_R1_R2(State8080* state);
+uint8_t Opcode_LXI_RP_DATA(State8080* state);
+uint8_t Opcode_STA_ADDR(State8080* state);
+uint8_t Opcode_LDA_ADDR(State8080* state);
+uint8_t Opcode_STAX_RP(State8080* state);
+uint8_t Opcode_LDAX_RP(State8080* state);
+uint8_t Opcode_SHLD_ADDR(State8080* state);
+uint8_t Opcode_LHDL_ADDR(State8080* state);
+uint8_t Opcode_XCHG(State8080* state);
+
+uint8_t Opcode_ADD_R_M(State8080* state);
+uint8_t Opcode_ADC_R_M(State8080* state);
+uint8_t Opcode_Sub_R_M(State8080* state);
+uint8_t Opcode_SBI_R_M(State8080* state);
