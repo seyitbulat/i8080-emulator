@@ -305,20 +305,28 @@ uint8_t Opcode_DCX_RP(State8080* state){
 
 
 uint8_t Opcode_DAA(State8080* state){
+  uint16_t buffer = state->reg_a;
+
   uint8_t low_nibble = state->reg_a & 0x0F;
-  uint8_t high_nibble = (state->reg_a >> 4u) & 0x0F;
 
-  uint8_t ac_flag = state->reg_flag & 0x10; 
-  uint8_t cy_flag = state->reg_flag & 0x01;
 
-  if(low_nibble > 9 || ac_flag == 0x10){
-    state->reg_a += 6;
+  if(low_nibble > 9 || (state->reg_flag & 0x10) != 0){
+    buffer += 0x06;
   }
 
-  if(high_nibble > 9 || cy_flag == 0b1){
-    state->reg_a = ((high_nibble + 4) << 4u) | low_nibble;
+  uint8_t high_nibble = (buffer >> 4u) & 0x0F
+
+  if(high_nibble > 9 || (state->reg_flag & 0x01) != 0){
+    buffer += 0x60;
   }
 
+  if(buffer > 0xFF){
+    state->reg_flag |= 0x01;
+  }
+
+  state->reg_a = buffer & 0xFF;
+
+  UpdateZeroAndSignFlags(state, state->reg_a);
   return 4;
 
 }
