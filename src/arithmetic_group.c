@@ -314,7 +314,7 @@ uint8_t Opcode_DAA(State8080* state){
     buffer += 0x06;
   }
 
-  uint8_t high_nibble = (buffer >> 4u) & 0x0F
+  uint8_t high_nibble = (buffer >> 4u) & 0x0F;
 
   if(high_nibble > 9 || (state->reg_flag & 0x01) != 0){
     buffer += 0x60;
