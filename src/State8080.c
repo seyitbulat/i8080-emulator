@@ -38,7 +38,25 @@ void Init8080(State8080* state) {
     state->instruction_set[0x88 + reg] = Opcode_ADC_R_M;
     state->instruction_set[0x90 + reg] = Opcode_Sub_R_M;
     state->instruction_set[0x98 + reg] = Opcode_SBI_R_M;
+
+    state->instruction_set[0xA0 + reg] = Opcode_ANA_R_M;
+    state->instruction_set[0xA8 + reg] = Opcode_XRA_R_M;
+    state->instruction_set[0xB0 + reg] = Opcode_ORA_R_M;
+    state->instruction_set[0xB8 + reg] = Opcode_CMP_R_M;
   }
+
+  state->instruction_set[0xE6] = Opcode_ANI_DATA;
+  state->instruction_set[0xEE] = Opcode_XRI_DATA;
+  state->instruction_set[0xF6] = Opcode_ORI_DATA;
+  state->instruction_set[0xFE] = Opcode_CPI_DATA;
+
+  state->instruction_set[0x07] = Opcode_RLC;
+  state->instruction_set[0x0F] = Opcode_RRC;
+  state->instruction_set[0x17] = Opcode_RAL;
+  state->instruction_set[0x1F] = Opcode_RAR;
+  state->instruction_set[0x2F] = Opcode_CMA;
+  state->instruction_set[0x37] = Opcode_STC;
+  state->instruction_set[0x3F] = Opcode_CMC;
 
   state->instruction_set[0x00] = Opcode_NOP;
 }
