@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define MEMORY_SIZE 65536
 
@@ -41,6 +42,7 @@ uint8_t* GetRegisterPointer(State8080* state, uint8_t reg_code);
 uint16_t* GetRegisterPair(State8080* state, uint8_t rp);
 void UpdateZeroAndSignFlags(State8080* state, uint8_t result);
 void GetRegister(State8080* state, uint8_t index);
+bool GetConditionStatus(State8080* state, uint8_t val);
 
 // opcodes
 uint8_t Opcode_NOP(State8080* state);

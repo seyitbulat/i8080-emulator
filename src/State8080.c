@@ -114,10 +114,31 @@ void UpdateZeroAndSignFlags(State8080* state, uint8_t result) {
   p = p ^ (p >> 2);
   p = p ^ (p >> 1);
 
-  if((p & 1) == 0){
+  if ((p & 1) == 0) {
     state->reg_flag |= 0x04;
-  }else{
+  } else {
     state->reg_flag &= ~0x04;
+  }
+}
+
+bool GetConditionStatus(State8080* state, uint8_t val) {
+  switch (val) {
+    case 0:
+      return (state->reg_flag & 0x40) == 0;
+    case 1:
+      return (state->reg_flag & 0x40) != 0;
+    case 2:
+      return (state->reg_flag & 0x01) == 0;
+    case 3:
+      return (state->reg_flag & 0x01) != 0;
+    case 4:
+      return (state->reg_flag & 0x04) == 0;
+    case 5:
+      return (state->reg_flag & 0x04) != 0;
+    case 6:
+      return (state->reg_flag & 0x80) == 0;
+    case 7:
+      return (state->reg_flag & 0x80) != 0;
   }
 }
 
