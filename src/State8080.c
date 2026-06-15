@@ -109,9 +109,17 @@ void UpdateZeroAndSignFlags(State8080* state, uint8_t result) {
   } else {
     state->reg_flag &= 0x7F;  // set sign bit to 0
   }
+
+  uint8_t p = result ^ (result >> 4);
+  p = p ^ (p >> 2);
+  p = p ^ (p >> 1);
+
+  if((p & 1) == 0){
+    state->reg_flag |= 0x04;
+  }else{
+    state->reg_flag &= ~0x04;
+  }
 }
-
-
 
 uint16_t EmulateCycle(State8080* state) {
   uint8_t opcode = state->memory[state->pc];
