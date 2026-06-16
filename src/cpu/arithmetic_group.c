@@ -88,7 +88,9 @@ uint8_t Opcode_Sub_R_M(State8080* state) {
     state->reg_flag &= ~0x01;
   }
 
-  if ((state->reg_a & 0x0F) < (val & 0x0F)) {
+  uint8_t sub = state->reg_a - val;
+
+  if ((state->reg_a ^ (~val) ^ sub) & 0x10) {
     state->reg_flag |= 0x10;  // Auxiliary Carry
   } else {
     state->reg_flag &= ~0x10;
@@ -269,7 +271,10 @@ uint8_t Opcode_DCR_R_M(State8080* state) {
 
   uint8_t* reg_val = GetRegisterPointer(state, reg_address);
 
-  if ((*reg_val & 0x0F) == 0x00) {
+  uint8_t before = *reg_val;
+  uint8_t result = before - 0x01;
+
+  if ((before ^ (~0x01) ^ result) & 0x10) {
     state->reg_flag |= 0x10;
   } else {
     state->reg_flag &= ~0x10;
@@ -316,30 +321,38 @@ uint8_t Opcode_DAD(State8080* state) {
     state->reg_flag &= ~0x01;
   }
 
-  state->reg_hl.hl = (uint16_t) result;
+  state->reg_hl.hl = (uint16_t)result;
   return 10;
 }
 
 uint8_t Opcode_DAA(State8080* state) {
-  uint16_t buffer = state->reg_a;
+  uint8_t acc_before = state->reg_a;
+  uint8_t correction = 0;
 
-  uint8_t low_nibble = state->reg_a & 0x0F;
-
-  if (low_nibble > 9 || (state->reg_flag & 0x10) != 0) {
-    buffer += 0x06;
+  if ((acc_before & 0x0F) > 9 || (state->reg_flag & 0x10) != 0) {
+    correction |= 0x06;
   }
 
-  uint8_t high_nibble = (buffer >> 4u) & 0x0F;
+  if (acc_before > 0x99 || (state->reg_flag & 0x01) != 0) {
+    correction |= 0x60;
+  }
 
-  if (high_nibble > 9 || (state->reg_flag & 0x01) != 0) {
-    buffer += 0x60;
+  uint16_t buffer = (uint16_t)acc_before + correction;
+  uint8_t acc_after = (uint8_t)(buffer & 0xFF);
+
+  if ((acc_before ^ correction ^ acc_after) & 0x10) {
+    state->reg_flag |= 0x10;
+  } else {
+    state->reg_flag &= ~0x10;
   }
 
   if (buffer > 0xFF) {
     state->reg_flag |= 0x01;
+  } else {
+    state->reg_flag &= ~0x01;
   }
 
-  state->reg_a = buffer & 0xFF;
+  state->reg_a = acc_after;
 
   UpdateZeroAndSignFlags(state, state->reg_a);
   return 4;

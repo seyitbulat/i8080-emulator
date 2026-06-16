@@ -8,7 +8,7 @@ uint8_t Opcode_ANA_R_M(State8080* state) {
   state->reg_a &= *reg_val;
 
   state->reg_flag &= ~0x01;
-  state->reg_flag &= ~0x10;
+  state->reg_flag |= 0x10;
 
   UpdateZeroAndSignFlags(state, state->reg_a);
   if (reg == 6) {
@@ -23,7 +23,7 @@ uint8_t Opcode_ANI_DATA(State8080* state) {
   state->reg_a &= data;
 
   state->reg_flag &= ~0x01;
-  state->reg_flag &= ~0x10;
+  state->reg_flag |= 0x10;
 
   UpdateZeroAndSignFlags(state, state->reg_a);
 
