@@ -115,8 +115,8 @@ The project uses strict compiler flags for C89/C99/C11 compatibility:
 ## Running
 
 ```bash
-# From the build directory, copy the test ROM and run
-cp build/CPUTEST.COM .
+# From the ROMs directory, copy the test ROM and run
+cp Roms/CPUTEST.COM ./build
 ./build/i8080_emulator
 ```
 
