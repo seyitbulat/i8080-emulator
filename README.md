@@ -228,10 +228,6 @@ int main() {
 - Intel 8080/8085 Assembly Language Programming
 - CP/M Operating System Documentation
 
-## License
-
-Please check the repository for license information.
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues and pull requests.
