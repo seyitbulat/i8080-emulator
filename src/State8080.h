@@ -79,3 +79,13 @@ uint8_t Opcode_RLC(State8080* state);
 uint8_t Opcode_RRC(State8080* state);
 uint8_t Opcode_RAL(State8080* state);
 uint8_t Opcode_RAR(State8080* state);
+
+// Branch group
+uint8_t Opcode_JMP_ADDR(State8080* state);
+uint8_t Opcode_JUMP_CONDITIONAL_ADDR(State8080* state);
+uint8_t Opcode_CALL_ADDR(State8080* state);
+uint8_t Opcode_CALL_CONDITIONAL_ADDR(State8080* state);
+uint8_t Opcode_RET(State8080* state);
+uint8_t Opcode_RET_CONDITIONAL(State8080* state);
+uint8_t Opcode_RST(State8080* state);
+uint8_t Opcode_PCHL(State8080* state);

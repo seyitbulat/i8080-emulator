@@ -58,6 +58,51 @@ void Init8080(State8080* state) {
   state->instruction_set[0x37] = Opcode_STC;
   state->instruction_set[0x3F] = Opcode_CMC;
 
+  // Branch group
+  state->instruction_set[0xC3] = Opcode_JMP_ADDR;
+
+  state->instruction_set[0xC2] = Opcode_JUMP_CONDITIONAL_ADDR;  // JNZ
+  state->instruction_set[0xCA] = Opcode_JUMP_CONDITIONAL_ADDR;  // JZ
+  state->instruction_set[0xD2] = Opcode_JUMP_CONDITIONAL_ADDR;  // JNC
+  state->instruction_set[0xDA] = Opcode_JUMP_CONDITIONAL_ADDR;  // JC
+  state->instruction_set[0xE2] = Opcode_JUMP_CONDITIONAL_ADDR;  // JPO
+  state->instruction_set[0xEA] = Opcode_JUMP_CONDITIONAL_ADDR;  // JPE
+  state->instruction_set[0xF2] = Opcode_JUMP_CONDITIONAL_ADDR;  // JP
+  state->instruction_set[0xFA] = Opcode_JUMP_CONDITIONAL_ADDR;  // JM
+
+  state->instruction_set[0xCD] = Opcode_CALL_ADDR;
+
+  state->instruction_set[0xC4] = Opcode_CALL_CONDITIONAL_ADDR;  // CNZ
+  state->instruction_set[0xCC] = Opcode_CALL_CONDITIONAL_ADDR;  // CZ
+  state->instruction_set[0xD4] = Opcode_CALL_CONDITIONAL_ADDR;  // CNC
+  state->instruction_set[0xDC] = Opcode_CALL_CONDITIONAL_ADDR;  // CC
+  state->instruction_set[0xE4] = Opcode_CALL_CONDITIONAL_ADDR;  // CPO
+  state->instruction_set[0xEC] = Opcode_CALL_CONDITIONAL_ADDR;  // CPE
+  state->instruction_set[0xF4] = Opcode_CALL_CONDITIONAL_ADDR;  // CP
+  state->instruction_set[0xFC] = Opcode_CALL_CONDITIONAL_ADDR;  // CM
+
+  state->instruction_set[0xC9] = Opcode_RET;
+
+  state->instruction_set[0xC0] = Opcode_RET_CONDITIONAL;  // RNZ
+  state->instruction_set[0xC8] = Opcode_RET_CONDITIONAL;  // RZ
+  state->instruction_set[0xD0] = Opcode_RET_CONDITIONAL;  // RNC
+  state->instruction_set[0xD8] = Opcode_RET_CONDITIONAL;  // RC
+  state->instruction_set[0xE0] = Opcode_RET_CONDITIONAL;  // RPO
+  state->instruction_set[0xE8] = Opcode_RET_CONDITIONAL;  // RPE
+  state->instruction_set[0xF0] = Opcode_RET_CONDITIONAL;  // RP
+  state->instruction_set[0xF8] = Opcode_RET_CONDITIONAL;  // RM
+
+  state->instruction_set[0xC7] = Opcode_RST;  // RST 0
+  state->instruction_set[0xCF] = Opcode_RST;  // RST 1
+  state->instruction_set[0xD7] = Opcode_RST;  // RST 2
+  state->instruction_set[0xDF] = Opcode_RST;  // RST 3
+  state->instruction_set[0xE7] = Opcode_RST;  // RST 4
+  state->instruction_set[0xEF] = Opcode_RST;  // RST 5
+  state->instruction_set[0xF7] = Opcode_RST;  // RST 6
+  state->instruction_set[0xFF] = Opcode_RST;  // RST 7
+
+  state->instruction_set[0xE9] = Opcode_PCHL;
+
   state->instruction_set[0x00] = Opcode_NOP;
 }
 
