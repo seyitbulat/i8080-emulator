@@ -294,7 +294,7 @@ uint8_t Opcode_INX_RP(State8080* state) {
   return 5;
 }
 
-uint8_t Opcode_DCX_RP(State8080* state){
+uint8_t Opcode_DCX_RP(State8080* state) {
   uint8_t rp_address = (state->memory[state->pc - 1] >> 4u) & 0x03;
   uint16_t* rp_value = GetRegisterPair(state, rp_address);
 
@@ -303,24 +303,39 @@ uint8_t Opcode_DCX_RP(State8080* state){
   return 5;
 }
 
+uint8_t Opcode_DAD(State8080* state) {
+  uint8_t rp = (state->memory[state->pc - 1] >> 4u) & 0x03;
 
-uint8_t Opcode_DAA(State8080* state){
+  uint16_t* reg_val = GetRegisterPair(state, rp);
+
+  uint32_t result = state->reg_hl.hl + *reg_val;
+
+  if (result > 0xFFFF) {
+    state->reg_flag |= 0x01;
+  } else {
+    state->reg_flag &= ~0x01;
+  }
+
+  state->reg_hl.hl = (uint16_t) result;
+  return 10;
+}
+
+uint8_t Opcode_DAA(State8080* state) {
   uint16_t buffer = state->reg_a;
 
   uint8_t low_nibble = state->reg_a & 0x0F;
 
-
-  if(low_nibble > 9 || (state->reg_flag & 0x10) != 0){
+  if (low_nibble > 9 || (state->reg_flag & 0x10) != 0) {
     buffer += 0x06;
   }
 
   uint8_t high_nibble = (buffer >> 4u) & 0x0F;
 
-  if(high_nibble > 9 || (state->reg_flag & 0x01) != 0){
+  if (high_nibble > 9 || (state->reg_flag & 0x01) != 0) {
     buffer += 0x60;
   }
 
-  if(buffer > 0xFF){
+  if (buffer > 0xFF) {
     state->reg_flag |= 0x01;
   }
 
@@ -328,5 +343,4 @@ uint8_t Opcode_DAA(State8080* state){
 
   UpdateZeroAndSignFlags(state, state->reg_a);
   return 4;
-
 }

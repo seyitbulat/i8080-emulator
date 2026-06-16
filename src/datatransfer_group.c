@@ -154,10 +154,10 @@ uint8_t Opcode_SHLD_ADDR(State8080* state){
 
 
 /*
-    LHDL addr (Load H and L direct)
+  LHLD addr (Load H and L direct)
 */
 
-uint8_t Opcode_LHDL_ADDR(State8080* state){
+uint8_t Opcode_LHLD_ADDR(State8080* state){
     uint8_t low_address = state->memory[state->pc];
     uint8_t high_address = state->memory[state->pc + 1];
 

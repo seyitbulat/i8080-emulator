@@ -17,13 +17,21 @@ void Init8080(State8080* state) {
   state->instruction_set[0x1A] = Opcode_LDAX_RP;
 
   state->instruction_set[0x22] = Opcode_SHLD_ADDR;
-  state->instruction_set[0x2A] = Opcode_LHDL_ADDR;
+  state->instruction_set[0x2A] = Opcode_LHLD_ADDR;
   state->instruction_set[0x32] = Opcode_STA_ADDR;
   state->instruction_set[0x3A] = Opcode_LDA_ADDR;
   state->instruction_set[0xEB] = Opcode_XCHG;
 
   for (uint8_t reg = 0; reg < 8; reg++) {
     state->instruction_set[0x06 + (reg << 3u)] = Opcode_MVI_R;
+    state->instruction_set[0x04 + (reg << 3u)] = Opcode_INR_R_M;
+    state->instruction_set[0x05 + (reg << 3u)] = Opcode_DCR_R_M;
+  }
+
+  for (uint8_t rp = 0; rp < 4; rp++) {
+    state->instruction_set[0x03 + (rp << 4u)] = Opcode_INX_RP;
+    state->instruction_set[0x0B + (rp << 4u)] = Opcode_DCX_RP;
+    state->instruction_set[0x09 + (rp << 4u)] = Opcode_DAD;
   }
 
   for (uint8_t opcode = 0x40; opcode <= 0x7F; opcode++) {
@@ -37,7 +45,7 @@ void Init8080(State8080* state) {
     state->instruction_set[0x80 + reg] = Opcode_ADD_R_M;
     state->instruction_set[0x88 + reg] = Opcode_ADC_R_M;
     state->instruction_set[0x90 + reg] = Opcode_Sub_R_M;
-    state->instruction_set[0x98 + reg] = Opcode_SBI_R_M;
+    state->instruction_set[0x98 + reg] = Opcode_SBB_R_M;
 
     state->instruction_set[0xA0 + reg] = Opcode_ANA_R_M;
     state->instruction_set[0xA8 + reg] = Opcode_XRA_R_M;
@@ -49,7 +57,12 @@ void Init8080(State8080* state) {
   state->instruction_set[0xEE] = Opcode_XRI_DATA;
   state->instruction_set[0xF6] = Opcode_ORI_DATA;
   state->instruction_set[0xFE] = Opcode_CPI_DATA;
+  state->instruction_set[0xC6] = Opcode_ADI_DATA;
+  state->instruction_set[0xCE] = Opcode_ACI_DATA;
+  state->instruction_set[0xD6] = Opcode_SUI_DATA;
+  state->instruction_set[0xDE] = Opcode_SBI_DATA;
 
+  state->instruction_set[0x27] = Opcode_DAA;
   state->instruction_set[0x07] = Opcode_RLC;
   state->instruction_set[0x0F] = Opcode_RRC;
   state->instruction_set[0x17] = Opcode_RAL;
@@ -103,6 +116,25 @@ void Init8080(State8080* state) {
 
   state->instruction_set[0xE9] = Opcode_PCHL;
 
+  // Machine control / stack / I/O
+  state->instruction_set[0xC5] = Opcode_PUSH_RP;
+  state->instruction_set[0xD5] = Opcode_PUSH_RP;
+  state->instruction_set[0xE5] = Opcode_PUSH_RP;
+  state->instruction_set[0xF5] = Opcode_PUSH_PSW;
+
+  state->instruction_set[0xC1] = Opcode_POP_RP;
+  state->instruction_set[0xD1] = Opcode_POP_RP;
+  state->instruction_set[0xE1] = Opcode_POP_RP;
+  state->instruction_set[0xF1] = Opcode_POP_PSW;
+
+  state->instruction_set[0xE3] = Opcode_XTHL;
+  state->instruction_set[0xF9] = Opcode_SPHL;
+  state->instruction_set[0xDB] = Opcode_IN_PORT;
+  state->instruction_set[0xD3] = Opcode_OUT_PORT;
+  state->instruction_set[0xFB] = Opcode_EI;
+  state->instruction_set[0xF3] = Opcode_DI;
+  state->instruction_set[0x76] = Opcode_HLT;
+
   state->instruction_set[0x00] = Opcode_NOP;
 }
 
@@ -126,6 +158,8 @@ uint8_t* GetRegisterPointer(State8080* state, uint8_t reg_code) {
     case 7:  // A Register
       return &state->reg_a;
   }
+
+  return 0;
 }
 
 uint16_t* GetRegisterPair(State8080* state, uint8_t rp) {
@@ -139,6 +173,8 @@ uint16_t* GetRegisterPair(State8080* state, uint8_t rp) {
     case 3:
       return &state->sp;
   }
+
+  return 0;
 }
 
 void UpdateZeroAndSignFlags(State8080* state, uint8_t result) {
@@ -185,6 +221,8 @@ bool GetConditionStatus(State8080* state, uint8_t val) {
     case 7:
       return (state->reg_flag & 0x80) != 0;
   }
+
+  return false;
 }
 
 uint16_t EmulateCycle(State8080* state) {
@@ -196,4 +234,7 @@ uint16_t EmulateCycle(State8080* state) {
 
 uint8_t Opcode_NotImplemented(State8080* state) { return Opcode_NOP(state); }
 
-uint8_t Opcode_NOP(State8080* state) { return 4; }
+uint8_t Opcode_NOP(State8080* state) {
+  (void)state;
+  return 4;
+}
